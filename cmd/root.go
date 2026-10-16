@@ -4,25 +4,22 @@ Copyright © 2026 Henry Grigoryan henrygrigoryan5@gmail.com
 package cmd
 
 import (
-	"fmt"
 	"os"
 
 	"github.com/spf13/cobra"
+
+	client "github.com/vordankarmir/broadcast-server/cmd/client"
+	server "github.com/vordankarmir/broadcast-server/cmd/server"
 )
 
-var port int
-var origin string
-var clearCache bool
+var runServer string
+var runClient string
 
 var rootCmd = &cobra.Command{
-	Use:   "caching-proxy",
-	Short: "Caching Proxy",
-	Long:  `A CLI tool that starts a caching proxy server, it will forward requests to the actual server and cache the responses.`,
-	PreRunE: func(cmd *cobra.Command, args []string) error {
-
-		if !clearCache && origin == "" {
-			return fmt.Errorf("--origin and --clear-cache are mutually exclusive")
-		}
+	Use:   "broadcast-server",
+	Short: "Broadcast Server",
+	Long:  `A CLI tool that starts a Broadcast Server server, it will forward requests to the actual server and cache the responses.`,
+	RunE: func(cmd *cobra.Command, args []string) error {
 
 		return nil
 	},
@@ -36,7 +33,6 @@ func Execute() {
 }
 
 func init() {
-	rootCmd.PersistentFlags().IntVar(&port, "port", 3000, "Port to run the server on")
-	rootCmd.PersistentFlags().StringVar(&origin, "origin", "", "Origin server URL")
-	rootCmd.Flags().BoolVar(&clearCache, "clear-cache", false, "Clear cache for a specific URL")
+	rootCmd.AddCommand(server.NewCommand())
+	rootCmd.AddCommand(client.NewCommand())
 }

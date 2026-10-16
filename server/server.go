@@ -11,7 +11,6 @@ import (
 
 	"github.com/gin-gonic/gin"
 	"github.com/joho/godotenv"
-	"github.com/vordankarmir/broadcast-server/controllers"
 	"github.com/vordankarmir/broadcast-server/middlewares"
 )
 
@@ -21,14 +20,21 @@ func init() {
 	}
 }
 
-func Run(port string, origin string) {
+func Run() {
 	r := gin.Default()
 
 	r.Use(gin.Logger())
 	r.Use(gin.Recovery())
 	r.Use(middlewares.ErrorHandler())
 
-	controllers.RegisterCacheRoutes(r, origin)
+	// controllers.RegisterCacheRoutes(r)
+
+	port := os.Getenv("PORT")
+	if port == "" {
+		port = "3000"
+	}
+
+	// websocket.ConnectServer()
 
 	srv := &http.Server{
 		Addr:    ":" + port,
